@@ -10,7 +10,7 @@ import { BoardStatus } from "./boards-status.enum";
 export class BoardsService {
 	constructor(
 		// @InjectRepository(BoardRepository)
-		private boardRepository: BoardRepository, 
+		private boardRepository: BoardRepository,
 	) {}
 
 

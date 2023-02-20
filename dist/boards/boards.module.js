@@ -11,7 +11,7 @@ const common_1 = require("@nestjs/common");
 const board_repository_1 = require("./board.repository");
 const boards_controller_1 = require("./boards.controller");
 const boards_service_1 = require("./boards.service");
-const typeorm_ex_module_1 = require("./typeorm-ex.module");
+const typeorm_ex_module_1 = require("../typeOrmCustomRepo/typeorm-ex.module");
 let BoardsModule = class BoardsModule {
 };
 BoardsModule = __decorate([

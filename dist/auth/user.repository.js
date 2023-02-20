@@ -6,25 +6,19 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BoardRepository = void 0;
+exports.UserRepository = void 0;
 const typeorm_1 = require("typeorm");
-const board_entity_1 = require("./board.entity");
+const user_entity_1 = require("./user.entity");
 const typeorm_ex_decorator_1 = require("../typeOrmCustomRepo/typeorm-ex.decorator");
-const boards_status_enum_1 = require("./boards-status.enum");
-let BoardRepository = class BoardRepository extends typeorm_1.Repository {
-    async createBoard(createBoardDto) {
-        const { title, description } = createBoardDto;
-        const board = this.create({
-            title,
-            description,
-            status: boards_status_enum_1.BoardStatus.PUBLIC
-        });
-        await this.save(board);
-        return board;
+let UserRepository = class UserRepository extends typeorm_1.Repository {
+    async createUser(authCredentialsDto) {
+        const { username, password } = authCredentialsDto;
+        const user = this.create({ username, password });
+        await this.save(user);
     }
 };
-BoardRepository = __decorate([
-    (0, typeorm_ex_decorator_1.CustomRepository)(board_entity_1.Board)
-], BoardRepository);
-exports.BoardRepository = BoardRepository;
-//# sourceMappingURL=board.repository.js.map
+UserRepository = __decorate([
+    (0, typeorm_ex_decorator_1.CustomRepository)(user_entity_1.User)
+], UserRepository);
+exports.UserRepository = UserRepository;
+//# sourceMappingURL=user.repository.js.map

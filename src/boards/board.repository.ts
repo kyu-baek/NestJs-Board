@@ -1,6 +1,6 @@
 import { Repository } from "typeorm";
 import { Board } from "./board.entity";
-import { CustomRepository } from "./typeorm-ex.decorator";
+import { CustomRepository } from "../typeOrmCustomRepo/typeorm-ex.decorator";
 import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardStatus } from "./boards-status.enum";
 
