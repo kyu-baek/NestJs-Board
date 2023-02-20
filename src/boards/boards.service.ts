@@ -1,18 +1,51 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { BoardStatus } from './boards-status.enum';
 import { v1 as uuid } from 'uuid';
 import { CreateBoardDto } from './dto/create-board.dto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { BoardRepository } from './board.repository';
 import { Board } from './board.entity';
+import { BoardStatus } from "./boards-status.enum";
+
 
 @Injectable()
 export class BoardsService {
 	constructor(
-		@InjectRepository(BoardRepository)
+		// @InjectRepository(BoardRepository)
 		private boardRepository: BoardRepository, 
 	) {}
 
+
+	createBoard(createBoardDto: CreateBoardDto) : Promise<Board> {
+		return this.boardRepository.createBoard(createBoardDto);
+	}
+
+	async deleteBoard(id: number): Promise<void> {
+		const result = await this.boardRepository.delete(id);
+
+		if (result.affected === 0)
+			throw new NotFoundException(`Cant't find id ${id}`)
+		console.log('result', result);
+	}
+	async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
+		const board = await this.getBoardById(id);
+
+		board.status = status;
+		await this.boardRepository.save(board);
+		return board;
+	}
+
+	async getBoardById(id: number): Promise <Board> {
+		const found = await this.boardRepository.findOne({ where: { id } });
+
+		if (!found) {
+			throw new NotFoundException(`Can't find Board with id ${id}`)
+		}
+		return found;
+	}
+
+	async getAllBoards(): Promise <Board[]> {
+		return this.boardRepository.find();
+		//find 함수에 아무 인자가 없으면 모든 정보를 리턴한다.
+	}
 
 	// private boards: Board[] = [];
 
@@ -37,26 +70,6 @@ export class BoardsService {
 	// 	return board;
 	// }
 
-	async createBoard(createBoardBto: CreateBoardDto) : Promise<Board> {
-		const { title, description } = createBoardBto;
-
-		const board = this.boardRepository.create({
-			title,
-			description,
-			status: BoardStatus.PUBLIC
-		})
-		await this.boardRepository.save(board);
-		return board;
-	}
-
-	async getBoardById(id: number): Promise <Board> {
-		const found = await this.boardRepository.findOne({ where: { id } });
-
-		if (!found) {
-			throw new NotFoundException(`Can't find Board with id ${id}`)
-		}
-		return found;
-	}
 
 	// getBoardById(id: string) : Board {
 

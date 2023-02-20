@@ -9,10 +9,10 @@ import { Board } from './board.entity';
 export class BoardsController {
 	constructor(private boardsService: BoardsService){ }
 
-	// @Get('/')
-	// getAllBoard( ) : Board[] {
-	// 	return this.boardsService.getAllBoards();
-	// }
+	@Get()
+	getAllBoard( ) : Promise<Board[]> {
+		return this.boardsService.getAllBoards();
+	}
 
 	@Get('/:id')
 	getBoardById(@Param('id') id: number) : Promise<Board>  {
@@ -25,7 +25,20 @@ export class BoardsController {
 		return this.boardsService.createBoard(createBoardDto);
 	}
 
-	// @Get('/:id')
+	@Delete('/:id')
+	deleteBoard(@Param('id', ParseIntPipe) id: number): Promise<void> {
+		return this.boardsService.deleteBoard(id);
+	}
+
+	@Patch('/:id/status')
+	updateBoardStatus(
+		@Param('id', ParseIntPipe) id: number,
+		@Body('status', BoardStatusValidationPipe) status: BoardStatus,
+	): Promise<Board> {
+		return this.boardsService.updateBoardStatus(id, status);
+	}
+
+	//@Get('/:id')
 	// getBoardById(@Param('id') id: string) : Board {
 	// 	return this.boardsService.getBoardById(id);
 	// }
