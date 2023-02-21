@@ -12,11 +12,15 @@ const board_repository_1 = require("./board.repository");
 const boards_controller_1 = require("./boards.controller");
 const boards_service_1 = require("./boards.service");
 const typeorm_ex_module_1 = require("../typeOrmCustomRepo/typeorm-ex.module");
+const auth_module_1 = require("../auth/auth.module");
 let BoardsModule = class BoardsModule {
 };
 BoardsModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_ex_module_1.TypeOrmExModule.forCustomRepository([board_repository_1.BoardRepository])],
+        imports: [
+            typeorm_ex_module_1.TypeOrmExModule.forCustomRepository([board_repository_1.BoardRepository]),
+            auth_module_1.AuthModule
+        ],
         controllers: [boards_controller_1.BoardsController],
         providers: [boards_service_1.BoardsService]
     })

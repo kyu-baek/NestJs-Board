@@ -12,13 +12,26 @@ const auth_controller_1 = require("./auth.controller");
 const auth_service_1 = require("./auth.service");
 const user_repository_1 = require("./user.repository");
 const typeorm_ex_module_1 = require("../typeOrmCustomRepo/typeorm-ex.module");
+const jwt_1 = require("@nestjs/jwt");
+const passport_1 = require("@nestjs/passport");
+const jwt_strategy_1 = require("./jwt.strategy");
+const config = require("config");
+const jwtConfig = config.get('jwt');
 let AuthModule = class AuthModule {
 };
 AuthModule = __decorate([
     (0, common_1.Module)({
-        imports: [typeorm_ex_module_1.TypeOrmExModule.forCustomRepository([user_repository_1.UserRepository])],
+        imports: [
+            passport_1.PassportModule.register({ defaultStrategy: 'jwt' }),
+            jwt_1.JwtModule.register({
+                secret: jwtConfig.secret,
+                signOptions: { expiresIn: jwtConfig.expiresIn }
+            }),
+            typeorm_ex_module_1.TypeOrmExModule.forCustomRepository([user_repository_1.UserRepository])
+        ],
         controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService]
+        providers: [auth_service_1.AuthService, jwt_strategy_1.JwtStrategy],
+        exports: [jwt_strategy_1.JwtStrategy, passport_1.PassportModule]
     })
 ], AuthModule);
 exports.AuthModule = AuthModule;

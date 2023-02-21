@@ -10,6 +10,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Board = void 0;
+const user_entity_1 = require("../auth/user.entity");
 const typeorm_1 = require("typeorm");
 const boards_status_enum_1 = require("./boards-status.enum");
 let Board = class Board extends typeorm_1.BaseEntity {
@@ -30,6 +31,10 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Board.prototype, "status", void 0);
+__decorate([
+    (0, typeorm_1.ManyToOne)(type => user_entity_1.User, user => user.boards, { eager: false }),
+    __metadata("design:type", user_entity_1.User)
+], Board.prototype, "user", void 0);
 Board = __decorate([
     (0, typeorm_1.Entity)()
 ], Board);

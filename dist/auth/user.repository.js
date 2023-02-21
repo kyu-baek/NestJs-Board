@@ -10,11 +10,23 @@ exports.UserRepository = void 0;
 const typeorm_1 = require("typeorm");
 const user_entity_1 = require("./user.entity");
 const typeorm_ex_decorator_1 = require("../typeOrmCustomRepo/typeorm-ex.decorator");
+const common_1 = require("@nestjs/common");
+const bcrypt = require("bcryptjs");
 let UserRepository = class UserRepository extends typeorm_1.Repository {
     async createUser(authCredentialsDto) {
         const { username, password } = authCredentialsDto;
-        const user = this.create({ username, password });
-        await this.save(user);
+        const salt = await bcrypt.genSalt();
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const user = this.create({ username, password: hashedPassword });
+        try {
+            await user.save();
+        }
+        catch (error) {
+            if (error.code === '23505')
+                throw new common_1.ConflictException('Existing username');
+            else
+                throw new common_1.InternalServerErrorException();
+        }
     }
 };
 UserRepository = __decorate([

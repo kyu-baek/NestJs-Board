@@ -12,7 +12,14 @@ const typeorm_1 = require("@nestjs/typeorm");
 const boards_module_1 = require("./boards/boards.module");
 const typeorm_config_1 = require("./configs/typeorm.config");
 const auth_module_1 = require("./auth/auth.module");
+const logger_middleware_1 = require("./middleware/logger.middleware");
 let AppModule = class AppModule {
+    configure(consumer) {
+        consumer
+            .apply(logger_middleware_1.LoggerMiddleware, logger_middleware_1.LoggerMiddleware2)
+            .exclude({ path: '/users', method: common_1.RequestMethod.GET })
+            .forRoutes('/users');
+    }
 };
 AppModule = __decorate([
     (0, common_1.Module)({

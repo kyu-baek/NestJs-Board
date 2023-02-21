@@ -4,6 +4,9 @@ import { CreateBoardDto } from './dto/create-board.dto';
 import { BoardRepository } from './board.repository';
 import { Board } from './board.entity';
 import { BoardStatus } from "./boards-status.enum";
+import { DataSource } from 'typeorm';
+import { User } from 'src/auth/user.entity';
+
 
 
 @Injectable()
@@ -11,20 +14,22 @@ export class BoardsService {
 	constructor(
 		// @InjectRepository(BoardRepository)
 		private boardRepository: BoardRepository,
+		private dataSource: DataSource
 	) {}
 
 
-	createBoard(createBoardDto: CreateBoardDto) : Promise<Board> {
-		return this.boardRepository.createBoard(createBoardDto);
+	createBoard(createBoardDto: CreateBoardDto, user: User) : Promise<Board> {
+		return this.boardRepository.createBoard(createBoardDto, user);
 	}
 
-	async deleteBoard(id: number): Promise<void> {
-		const result = await this.boardRepository.delete(id);
-
+	async deleteBoard(id: number, user: User): Promise<void> {
+		const result = await this.boardRepository.delete({ id});
+		//const result = await this.boardRepository.delete({ id, user});
 		if (result.affected === 0)
 			throw new NotFoundException(`Cant't find id ${id}`)
 		console.log('result', result);
 	}
+
 	async updateBoardStatus(id: number, status: BoardStatus): Promise<Board> {
 		const board = await this.getBoardById(id);
 
@@ -45,6 +50,17 @@ export class BoardsService {
 	async getAllBoards(): Promise <Board[]> {
 		return this.boardRepository.find();
 		//find 함수에 아무 인자가 없으면 모든 정보를 리턴한다.
+	}
+
+	async getMyBoard(
+		user: User,
+	): Promise <Board[]>{
+		const query = this.boardRepository.createQueryBuilder('board');
+		//typeOrm 에서는 findOne() 같은 함수도 있지만 쿼리를 직접적으로 적어서 
+		// 복잡한 로직을 완성할 수도 있다. 
+		query.where('board.userId = :userId', {userId: user.id})
+		const boards = await query.getMany(); //전체를 가져온다.
+		return boards;
 	}
 
 	// private boards: Board[] = [];

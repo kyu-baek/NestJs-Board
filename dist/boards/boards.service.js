@@ -12,15 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BoardsService = void 0;
 const common_1 = require("@nestjs/common");
 const board_repository_1 = require("./board.repository");
+const typeorm_1 = require("typeorm");
 let BoardsService = class BoardsService {
-    constructor(boardRepository) {
+    constructor(boardRepository, dataSource) {
         this.boardRepository = boardRepository;
+        this.dataSource = dataSource;
     }
-    createBoard(createBoardDto) {
-        return this.boardRepository.createBoard(createBoardDto);
+    createBoard(createBoardDto, user) {
+        return this.boardRepository.createBoard(createBoardDto, user);
     }
-    async deleteBoard(id) {
-        const result = await this.boardRepository.delete(id);
+    async deleteBoard(id, user) {
+        const result = await this.boardRepository.delete({ id });
         if (result.affected === 0)
             throw new common_1.NotFoundException(`Cant't find id ${id}`);
         console.log('result', result);
@@ -41,10 +43,17 @@ let BoardsService = class BoardsService {
     async getAllBoards() {
         return this.boardRepository.find();
     }
+    async getMyBoard(user) {
+        const query = this.boardRepository.createQueryBuilder('board');
+        query.where('board.userId = :userId', { userId: user.id });
+        const boards = await query.getMany();
+        return boards;
+    }
 };
 BoardsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [board_repository_1.BoardRepository])
+    __metadata("design:paramtypes", [board_repository_1.BoardRepository,
+        typeorm_1.DataSource])
 ], BoardsService);
 exports.BoardsService = BoardsService;
 //# sourceMappingURL=boards.service.js.map

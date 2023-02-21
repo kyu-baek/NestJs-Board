@@ -18,21 +18,30 @@ const boards_service_1 = require("./boards.service");
 const boards_status_enum_1 = require("./boards-status.enum");
 const create_board_dto_1 = require("./dto/create-board.dto");
 const board_status_validation_pipe_1 = require("./pipes/board-status-validation.pipe");
+const passport_1 = require("@nestjs/passport");
+const get_user_decorator_1 = require("../auth/get-user.decorator");
+const user_entity_1 = require("../auth/user.entity");
 let BoardsController = class BoardsController {
     constructor(boardsService) {
         this.boardsService = boardsService;
+        this.logger = new common_1.Logger('BoareController');
     }
     getAllBoard() {
         return this.boardsService.getAllBoards();
     }
+    getMyBoard(user) {
+        this.logger.verbose(`User ${user.username} trying to get boards`);
+        return this.boardsService.getMyBoard(user);
+    }
     getBoardById(id) {
         return this.boardsService.getBoardById(id);
     }
-    createBoard(createBoardDto) {
-        return this.boardsService.createBoard(createBoardDto);
+    createBoard(createBoardDto, user) {
+        this.logger.verbose(`User ${user.username} creating a new  boards. Payload: ${JSON.stringify(createBoardDto)}`);
+        return this.boardsService.createBoard(createBoardDto, user);
     }
-    deleteBoard(id) {
-        return this.boardsService.deleteBoard(id);
+    deleteBoard(id, user) {
+        return this.boardsService.deleteBoard(id, user);
     }
     updateBoardStatus(id, status) {
         return this.boardsService.updateBoardStatus(id, status);
@@ -45,6 +54,13 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], BoardsController.prototype, "getAllBoard", null);
 __decorate([
+    (0, common_1.Get)('/myboard'),
+    __param(0, (0, get_user_decorator_1.GetUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [user_entity_1.User]),
+    __metadata("design:returntype", Promise)
+], BoardsController.prototype, "getMyBoard", null);
+__decorate([
     (0, common_1.Get)('/:id'),
     __param(0, (0, common_1.Param)('id')),
     __metadata("design:type", Function),
@@ -55,15 +71,18 @@ __decorate([
     (0, common_1.Post)(),
     (0, common_1.UsePipes)(common_1.ValidationPipe),
     __param(0, (0, common_1.Body)()),
+    __param(1, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_board_dto_1.CreateBoardDto]),
+    __metadata("design:paramtypes", [create_board_dto_1.CreateBoardDto,
+        user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], BoardsController.prototype, "createBoard", null);
 __decorate([
     (0, common_1.Delete)('/:id'),
     __param(0, (0, common_1.Param)('id', common_1.ParseIntPipe)),
+    __param(1, (0, get_user_decorator_1.GetUser)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Object, user_entity_1.User]),
     __metadata("design:returntype", Promise)
 ], BoardsController.prototype, "deleteBoard", null);
 __decorate([
@@ -76,6 +95,7 @@ __decorate([
 ], BoardsController.prototype, "updateBoardStatus", null);
 BoardsController = __decorate([
     (0, common_1.Controller)('boards'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)()),
     __metadata("design:paramtypes", [boards_service_1.BoardsService])
 ], BoardsController);
 exports.BoardsController = BoardsController;

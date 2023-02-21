@@ -1,3 +1,4 @@
+import { User } from "src/auth/user.entity";
 import { BaseEntity } from "typeorm";
 import { BoardStatus } from "./boards-status.enum";
 export declare class Board extends BaseEntity {
@@ -5,4 +6,5 @@ export declare class Board extends BaseEntity {
     title: string;
     description: string;
     status: BoardStatus;
+    user: User;
 }
