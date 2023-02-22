@@ -4,12 +4,14 @@ import { BoardsModule } from './boards/boards.module';
 import { typeORMConfig } from './configs/typeorm.config';
 import { AuthModule } from './auth/auth.module';
 import { LoggerMiddleware, LoggerMiddleware2 } from './middleware/logger.middleware';
+import { EventsModule } from './events/events.module';
 
 @Module({
   imports: [
     BoardsModule,
     TypeOrmModule.forRoot(typeORMConfig),
-    AuthModule
+    AuthModule,
+    EventsModule
   ],
 })
 export class AppModule implements NestModule{

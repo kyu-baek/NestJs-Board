@@ -45,3 +45,7 @@ npm install @types/passport-jwt --save
 
 /* config down */
 npm install config --save
+
+
+/* websocket gateway down */
+npm i --save @nestjs/websockets @nestjs/platform-socket.io
