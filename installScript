@@ -1,0 +1,47 @@
+/* download node and database */
+postgresSQL, pgAdmin
+
+/* version upgrade */
+npm install -g n
+n stable                 		-> 18.14.0
+npm i -g @nestjs/cli.    -> nest down
+
+/* packages down */
+npm i -g @nestjs/schematics
+npm i -g @nestjs/common
+npm i -g @nestjs/core
+npm i -g @nestjs/testing
+
+/* make a project */
+mkdir [name]
+cd [name]
+nest new ./
+nest g module [name]
+nest g controller [name] --no-spec
+nest g service [name] --no-spec
+
+/* uuid down */
+npm install uuid --save
+
+/* pipe down 
+class-validator   : 기본 내장 파이프들을 사용할 수 있다.
+class-transformer : 커스텀하게 사용할 때
+*/
+npm i --save class-validator class-transformer 
+
+/* typeorm down
+pg               : postgres 모듈
+typeorm          : typeorm 모듈
+@nestjs/typeorm  : nest 에서 typeorm 을 사용하기 위해 연동시켜주는 모듈
+ */
+npm install pg typeorm @nestjs/typeorm --save
+
+/* bcryptjs down */
+npm install bcryptjs --save
+
+/* JWT, Passport down */
+npm install @nestjs/jwt @nestjs/passport passport-jwt --save
+npm install @types/passport-jwt --save
+
+/* config down */
+npm install config --save
